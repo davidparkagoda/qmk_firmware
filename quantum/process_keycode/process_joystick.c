@@ -121,7 +121,7 @@ bool process_joystick_analogread_quantum(){
     wait_us(10);
     
 #ifdef __AVR__
-    int16_t axis_val = analogRead(joystick_axes[axis_index].input_pin & (0xFF >> PORT_SHIFTER));
+    int16_t axis_val = analogRead(pinToADCIndex(joystick_axes[axis_index].input_pin));
 #else
   //default to resting position
     int16_t axis_val = joystick_axes[axis_index].mid_digit;

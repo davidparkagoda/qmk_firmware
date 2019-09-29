@@ -25,6 +25,44 @@ static uint8_t aref = ADC_REF_POWER;  // default to AREF = Vcc
 
 void analogReference(uint8_t mode) { aref = mode & 0xC0; }
 
+uint8_t pinToADCIndex(uint8_t pin){
+  #if defined(__AVR_ATmega32U4__)
+    static const uint8_t PROGMEM pin_to_adc[] = {
+      B4, 8,
+      B5, 7,
+      B6, 6,
+      D4, 11,
+      D6, 10,
+      D7, 9,
+      F0, 0,
+      F1, 1,
+      F4, 2,
+      F5, 3,
+      F6, 4,
+      F7, 5
+    };
+
+    for ( uint8_t index = 0; index<sizeof(pin_to_adc)/2 ; ++index){
+      uint8_t entry = pgm_read_byte(pin_to_adc + index*2);
+      //uprintf("pinToADCIndex : entry %u : index : %u\n", entry, index);
+      if (entry==pin){
+        return pgm_read_byte(pin_to_adc + index*2 + 1);
+      } else if (entry>pin){
+        return (uint8_t)-1;
+      }
+    }
+    return (uint8_t)-1;
+  #elif defined(__AVR_AT90USB646__) || defined(__AVR_AT90USB1286__) || defined(__AVR_ATmega32A__)
+    if (pin<A0 || pin>A7){
+      return (uint8_t)-1;
+    } else {
+      return pin & ~(0xFF<<(PORT_SHIFTER));
+    }
+  #else
+    #error "no implemented"
+  #endif
+}
+
 // Arduino compatible pin input
 int16_t analogRead(uint8_t pin) {
 #if defined(__AVR_ATmega32U4__)

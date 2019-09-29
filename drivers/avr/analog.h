@@ -23,6 +23,7 @@
 extern "C" {
 #endif
 void    analogReference(uint8_t mode);
+uint8_t pinToADCIndex(uint8_t pin);
 int16_t analogRead(uint8_t pin);
 int16_t adc_read(uint8_t mux);
 #ifdef __cplusplus
