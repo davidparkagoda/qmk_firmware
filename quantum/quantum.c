@@ -81,6 +81,10 @@ float default_layer_songs[][16][2] = DEFAULT_LAYER_SONGS;
 #    endif
 #endif
 
+#ifdef JOYSTICK_ENABLE
+#include <process_keycode/process_joystick.h>
+#endif //JOYSTICK_ENABLE
+
 static void do_code16(uint16_t code, void (*f)(uint8_t)) {
     switch (code) {
         case QK_MODS ... QK_MODS_MAX:
@@ -285,6 +289,9 @@ bool process_record_quantum(keyrecord_t *record) {
 #endif
 #ifdef SPACE_CADET_ENABLE
             process_space_cadet(keycode, record) &&
+#endif
+#ifdef JOYSTICK_ENABLE
+            process_joystick(keycode, record) &&
 #endif
             true)) {
         return false;
